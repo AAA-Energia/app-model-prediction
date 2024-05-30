@@ -3,6 +3,7 @@ import mlflow
 import pandas as pd
 from mlflow.exceptions import RestException, MlflowException
 import numpy as np
+import datetime
 
 st.title("Modelo para la Predicción de la Demanda de Energía")
 st.write("Espacio para probar el modelo seleccionado, para la materia de Aprendizaje Automático Aplicado.")
@@ -54,15 +55,25 @@ def main():
                     
                 #if st.button("Ejecutar predicciones"):
     else:
+        fecha_inicio = st.date_input("Fecha de inicio de la prediccion:")
+        hora_inicio = st.time_input("Hora de inicio de la prediccion:", value=None, step=3600)
+        print(hora_inicio)
+
         forecast_hours = st.number_input("¿A cuántas horas a futuro le gustaria pronosticar?", min_value = 1, max_value = 10, value = 5, step = 1)
         model = load_model(model_name)
 
-        forecast = model.predict(model.make_future_dataframe(forecast_hours, freq='h'))
-        pred = pd.DataFrame()
-        pred["demanda"] = forecast["yhat"].tail(forecast_hours)
-        pred["horas_a_futuro"] = np.arange(forecast_hours) + 1
-        st.write("Predicciones:")
-        st.write(pred[["horas_a_futuro","demanda"]].tail(forecast_hours))
+        if hora_inicio is not None:
+            forecast_df = pd.DataFrame({
+                "ds": pd.date_range(datetime.datetime.combine(fecha_inicio,hora_inicio), periods=forecast_hours, freq='h')
+            })
+            forecast = model.predict(forecast_df)
+            pred = pd.DataFrame()
+
+            pred["fecha_y_hora"] = forecast_df['ds']
+            pred["demanda"] = forecast["yhat"].tail(forecast_hours)
+            
+            st.write("Predicciones:")
+            st.write(pred[["fecha_y_hora","demanda"]].tail(forecast_hours))
                 
 if __name__ == "__main__":
     main()
