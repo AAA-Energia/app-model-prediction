@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+    app_model_predict:
+        build: ./
+        command: streamlit run app/main.py --server.port 8501
+        volumes:
+            - ./:/usr/src/app
+        ports:
+            - 8501:8501
+        environment:
+            - MLFLOW_TRACKING_URI=${MLFLOW_TRACKING_URI}
+        image: modelpredictapp:latest
+       
