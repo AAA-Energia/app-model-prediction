@@ -31,7 +31,7 @@ st.title("Prueba de Modelos en Producción")
 
 def main():
     # Subir archivo CSV con datos de prueba
-    model_name = st.radio("Seleccione un modelo", ["Prophet_Model","Gradient-Boosting-Model","random_forest_model"], index = 2)
+    model_name = st.radio("Seleccione un modelo", ["Prophet_Model","Gradient_Boosting_Model","random_forest_model"], index = 2)
     #model_stage = st.selectbox("Stage del modelo", ["Production", "Staging", "None"])
     st_frame = st.empty()
 
